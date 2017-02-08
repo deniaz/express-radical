@@ -33,12 +33,23 @@ const validator = new Ajv({
   }
 })
 
+function registerRoutes (validate, storage, plural) {
+  const router = express.Router()
+  router.post('/', (req, res) => create.createResource(req, res, validate, storage, plural))
+  router.get('/:id', (req, res) => retrieve.getResource(req, res, storage))
+  router.get('/', (req, res) => retrieve.getAllResources(req, res, storage))
+  router.delete('/:id', (req, res) => remove.deleteResource(req, res, storage))
+  router.put('/:id', (req, res) => update.updateResource(req, res, validate, storage, plural))
+  router.patch('/:id', (req, res) => update.patchResource(req, res, validate, storage, plural))
+
+  return router
+}
+
 function start (app, schemas) {
   const factory = require('./drivers/in-memory')
   app.use(bodyParser.json())
 
   schemas.map(schema => {
-    console.log(`Registering ${schema.title}`)
     validator.compileAsync(schema, (err, validate) => {
       if (err) {
         console.log(err)
@@ -46,16 +57,9 @@ function start (app, schemas) {
 
       const name = schema.title.toLowerCase()
       const plural = pluralize(name)
-
-      const router = express.Router()
       const storage = factory()
-      // res.append('Via', '1.0.0-alpha RAD Shit');
-      router.post('/', (req, res) => create.createResource(req, res, validate, storage, plural))
-      router.get('/:id', (req, res) => retrieve.getResource(req, res, storage))
-      router.get('/', (req, res) => retrieve.getAllResources(req, res, storage))
-      router.delete('/:id', (req, res) => remove.deleteResource(req, res, storage))
-      router.put('/:id', (req, res) => update.updateResource(req, res, validate, storage, plural))
-      router.patch('/:id', (req, res) => update.patchResource(req, res, validate, storage, plural))
+
+      const router = registerRoutes(validate, storage, plural)
 
       app.use(`/${plural}`, router)
     })
