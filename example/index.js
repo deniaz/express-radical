@@ -1,13 +1,14 @@
 const express = require('express')
-const app = express()
-
 const radical = require('../src')
-// radical(app, [
-//   require('./src/product'),
-//   require('./src/person'),
+
+// You can either regsiter a folder containing all JSON schemas,
+const app = radical(express(), 'schemas')
+
+// or register individual schemas directly.
+// const app = radical(express(), [
+//   require('./schemas/product'),
+//   require('./schemas/person'),
 // ])
 
-radical(app, './schemas')
-
-app.get('/', (req, res) => res.sendStatus(418))
-app.listen(8080, () => console.info(`Listening on *:8080`))
+const port = process.env.PORT || 8080
+app.listen(port, () => console.info(`Listening on *:${port}`))

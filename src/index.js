@@ -86,4 +86,6 @@ module.exports = (app, schemas) => {
   } else {
     throw new Error(`Second param must be either a path or a array of schemas.`)
   }
+
+  return app
 }
