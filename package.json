@@ -1,7 +1,7 @@
 {
   "name": "radical",
   "version": "1.0.0-alpha",
-  "description": "",
+  "description": "Simple, opinionated RAD middleware for express.",
   "main": "src/index.js",
   "dependencies": {
     "ajv": "^4.11.2",
@@ -20,7 +20,6 @@
     "src"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
   "author": "Robert Vogt <robert@cheekyowl.com>",
