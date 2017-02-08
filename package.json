@@ -1,5 +1,5 @@
 {
-  "name": "radical",
+  "name": "express-radical",
   "version": "1.0.0-alpha",
   "description": "Simple, opinionated RAD middleware for express.",
   "main": "src/index.js",
