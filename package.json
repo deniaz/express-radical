@@ -2,6 +2,20 @@
   "name": "express-radical",
   "version": "1.0.0-alpha",
   "description": "Simple, opinionated RAD middleware for express.",
+    "repository": {
+    "type": "git",
+    "url": "deniaz/express-radical"
+  },
+  "keywords": [
+    "api",
+    "express",
+    "json-schema",
+    "json schema",
+    "rad",
+    "rest"
+  ],
+  "homepage": "https://github.com/deniaz/express-radical",
+  "bugs": "https://github.com/deniaz/express-radical/issues",
   "main": "src/index.js",
   "dependencies": {
     "ajv": "^4.11.2",
