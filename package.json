@@ -2,7 +2,7 @@
   "name": "express-radical",
   "version": "1.0.0-alpha",
   "description": "Simple, opinionated RAD middleware for express.",
-    "repository": {
+  "repository": {
     "type": "git",
     "url": "deniaz/express-radical"
   },
@@ -19,8 +19,10 @@
   "main": "src/index.js",
   "dependencies": {
     "ajv": "^4.11.2",
+    "bluebird": "^3.4.7",
     "body-parser": "^1.16.0",
     "express": "^4.14.0",
+    "fs-promise": "^1.0.0",
     "pluralize": "^3.1.0",
     "uuid": "^3.0.1"
   },
@@ -34,8 +36,12 @@
     "src"
   ],
   "scripts": {
+    "start": "cd example && node .",
     "lint": "eslint ."
   },
   "author": "Robert Vogt <robert@cheekyowl.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">7.0.0"
+  }
 }

@@ -1,6 +1,4 @@
-const fs = require('fs')
 const http = require('http')
-const path = require('path')
 const Ajv = require('ajv')
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -33,8 +31,9 @@ const validator = new Ajv({
   }
 })
 
-function registerRoutes (validate, storage, plural) {
+function createRouter ({ validate, plural, storage }) {
   const router = express.Router()
+
   router.post('/', (req, res) => create.createResource(req, res, validate, storage, plural))
   router.get('/:id', (req, res) => retrieve.getResource(req, res, storage))
   router.get('/', (req, res) => retrieve.getAllResources(req, res, storage))
@@ -50,46 +49,46 @@ function start (app, schemas) {
   app.use(bodyParser.json())
 
   schemas.map(schema => {
-    validator.compileAsync(schema, (err, validate) => {
-      if (err) {
-        console.log(err)
-      }
+    const validate = validator.compile(schema)
+    const name = schema.title.toLowerCase()
+    const plural = pluralize(name)
+    const storage = factory()
 
-      const name = schema.title.toLowerCase()
-      const plural = pluralize(name)
-      const storage = factory()
-
-      const router = registerRoutes(validate, storage, plural)
-
-      app.use(`/${plural}`, router)
-    })
+    app.use(`/${plural}`, createRouter({
+      validate,
+      plural,
+      storage,
+    }))
   })
-}
-
-module.exports = (app, schemas) => {
-  if (typeof schemas === 'string') {
-    const baseDir = path.join(process.cwd(), schemas)
-    schemas = []
-
-    fs.readdir(baseDir, (err, files) => {
-      if (err) {
-        throw err
-      }
-
-      files.forEach(file => schemas.push(
-        require(path.join(
-          baseDir,
-          file
-        ))
-      ))
-
-      start(app, schemas)
-    })
-  } else if (Array.isArray(schemas)) {
-    start(app, schemas)
-  } else {
-    throw new Error(`Second param must be either a path or a array of schemas.`)
-  }
 
   return app
 }
+
+function loadSchemas (directory) {
+  throw new Error(`Not yet supported due to promises.`)
+  // const baseDir = path.join(process.cwd(), directory)
+  // const files = fs.readdirSync(baseDir)
+  // const schemas = files.map(file => require(
+  //   path.join(
+  //     baseDir,
+  //     file
+  //   )
+  // ))
+
+  // return schemas
+}
+
+function isValidConfig (config) {
+  return config.schemas || config.path
+}
+
+function init (app, config) {
+  if (!isValidConfig(config)) {
+    throw new Error('Config must provide either schemas or a path to schemas. None provided.')
+  }
+
+  const schemas = config.schemas ? config.schemas : loadSchemas(config.path)
+  return start(app, schemas)
+}
+
+module.exports = init

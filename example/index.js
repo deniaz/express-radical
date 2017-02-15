@@ -2,7 +2,12 @@ const express = require('express')
 const radical = require('../src')
 
 // You can either regsiter a folder containing all JSON schemas,
-const app = radical(express(), 'schemas')
+const app = radical(express(), {
+  schemas: [
+    require('./schemas/product'),
+    require('./schemas/person'),
+  ],
+})
 
 // or register individual schemas directly.
 // const app = radical(express(), [
